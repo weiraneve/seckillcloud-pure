@@ -30,12 +30,6 @@
             <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
             <version>3.4.1</version>
         </dependency>
-        <!--测试-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
         <!--七牛云-->
         <dependency>
             <groupId>com.qiniu</groupId>
