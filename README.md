@@ -21,7 +21,7 @@
 - cloud-manage
 后台管理系统模块。使用Feign调用mission模块的一些接口，完成商品信息的增删查改的灵活配置和订单。对应cloud-manage表。
 - cloud-mission
-主要秒杀业务模块。cloud-mission模块里的test包里，有TestJmeterController类专供Jmeter压测工具测试秒杀性能。对应cloud-mission-goods、order、seckillGoods三个表的多数据源。
+主要秒杀业务模块。对应cloud-mission-goods、order、seckillGoods三个表的多数据源。
 
 ## 图文一览
 
@@ -107,7 +107,6 @@ exit 1
 其中的客户端的登录和注册的密码，为了做到脱敏，都是前端服务器进行国密加密然后传输到后端存储。
 - 后台系统中，简单实现一个对于用户是否能有资格进入秒杀系统的灵活配置，这里逻辑相对简略，此处的完成度不高。
 - 后台管理系统的接口应该遵从微服务的规则，一个服务模块使用一个数据库，这里可用Feign来调用，即cloud-manage去调用cloud-mission模块的接口来调用。本项目目前使用MyBatis配置多数据源来调用资源。
-放入com.weiran.mission包的controller包中测试，测试完再删除。要么就要在test包中启动test类对应的启动类。
 - 对于高并发下的超卖问题，项目测试过synchronized锁、Redisson分布式锁，在能保证并发安全的情况下，性能都有不少地损失，所以采取了LUA脚本解决，使Redis的操作具有原子性，做到了避免超卖。
 - cloud-mission模块，对于订单防重和写入的逻辑，根据用户id和商品id做一定地计算后得出订单id，结合幂等机制写入库中。
 - cloud-mission使用Feign被cloud-manage模块调用接口，并且是MyBatisPlus与MyBatis共存使用。
