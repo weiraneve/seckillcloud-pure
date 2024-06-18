@@ -1,0 +1,48 @@
+# 端口
+server:
+  port: 8205
+
+spring:
+  application:
+    name: cloud-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${DOCKER_NACOS:localhost}:8848 # 配置Nacos服务发现地址
+    gateway:
+      # 全局自定义过滤器Hystrix实现降级处理，但此处如果使用，则让秒杀性能大减。
+#      default-filters:
+#        - name: Hystrix
+#          args:
+#            name: defaultFallback
+#            fallbackUri: forward:/defaultFallback
+      # 路由（routes：路由，它由唯一标识（ID）、目标服务地址（uri）、一组断言（predicates）和一组过滤器组成（filters）。filters 不是必需参数。）
+      routes:
+        - id: cloud-mission
+          uri: lb://cloud-mission
+          predicates:
+            - Path=/mission/**
+          filters:
+            - StripPrefix=1
+
+        - id: cloud-manage
+          uri: lb://cloud-manage
+          predicates:
+            - Path=/manage/**
+          filters:
+            - StripPrefix=1
+
+management:
+  endpoints:
+    web:
+      # 开放指定节点 /actuator/（info, health, beans, env, metrics）或者全部
+      exposure:
+        include: '*'
+  # 在访问/actuator/health时显示完整信息
+  endpoint:
+    logfile:
+      external-file: log/cloud-gateway/gateway.log
+
+logging:
+  # 日志文件地址
+  config: classpath:logback.xml

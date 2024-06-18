@@ -1,0 +1,114 @@
+server:
+  port: 8888
+
+spring:
+  profiles:
+    active: weiran
+  application:
+    name: cloud-mission
+  redis:
+    database: 0
+    host: ${DOCKER_REDIS:localhost}
+    port: 6379
+    password:
+    timeout: 30000 # 连接超时时间（毫秒）
+  rabbitmq:
+    host: ${DOCKER_MQ:localhost}
+    port: 5672
+    username: guest
+    password: guest
+    # 全局消息确认消费默认
+    listener.simple.acknowledge-mode: auto
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${DOCKER_NACOS:localhost}:8848
+  autoconfigure:
+    # 排除 Druid 自动配置
+    exclude: com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
+  datasource:
+    # 指定使用 Druid 数据源
+    type: com.alibaba.druid.pool.DruidDataSource
+    dynamic:
+      datasource:
+        goods:
+          driverClassName: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://${DOCKER_DB:localhost}:3306/cloud-mission-goods?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true&allowPublicKeyRetrieval=true
+          username: root
+          password: 123456
+        order:
+          driverClassName: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://${DOCKER_DB:localhost}:3306/cloud-mission-order?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true&allowPublicKeyRetrieval=true
+          username: root
+          password: 123456
+        seckill:
+          driverClassName: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://${DOCKER_DB:localhost}:3306/cloud-mission-seckillGoods?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true&allowPublicKeyRetrieval=true
+          username: root
+          password: 123456
+      primary: order # 设置默认的数据源或者数据源组,默认值即为master
+      strict: true # 严格匹配数据源,默认false. true未匹配到指定数据源时抛异常,false使用默认数据源
+    druid:
+      # 初始连接数
+      initialSize: 5
+      # 最小连接池数量
+      minIdle: 10
+      # 最大连接池数量
+      maxActive: 20
+      # 配置获取连接等待超时的时间
+      maxWait: 60000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      timeBetweenEvictionRunsMillis: 60000
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      minEvictableIdleTimeMillis: 300000
+      # 配置一个连接在池中最大生存的时间，单位是毫秒
+      maxEvictableIdleTimeMillis: 900000
+      # 配置检测连接是否有效
+      validationQuery: SELECT 1 FROM DUAL
+  flyway:
+    enabled: true
+    # 版本更新历史记录表
+    table: t_db_version
+    # 非空数据库初始化Flyway时需要打开此开关进行Baseline操作
+    baseline-on-migrate: true
+    # 是否可以无序执行。开发环境最好开启 outOfOrder, 生产环境关闭 outOfOrder
+    out-of-order: false
+    # 迁移前校验 SQL 文件是否存在问题
+    validate-on-migrate: true
+    locations: classpath:db/order # 这里写主库路径，然后在配置类中转换
+
+qiniu:
+  accessKey: ENC(XEL2TdE7S3eBkI4lukdgHuP03m3FKV/NaCpUezk6z6KCR6UOo7UGmS8VXI2YlI/cDCXyuGbuqFw=)
+  secretKey: ENC(RySyvFuZ+SfUDAVA0VSUX4fexjmQ1t/D45oADbkAkRMQdy0kQX+cF9uyRsh/BUzJciemr1GK610=)
+  # 对象存储空间名
+  bucket: weiraneve
+  # 域名
+  domain: http://res.steveay.com/
+
+# 配置文件加密
+jasypt:
+  encryptor:
+    # 密钥
+    password: 123
+
+mybatis-plus:
+  mapper-locations: classpath:mappers/**.xml
+
+management:
+  endpoints:
+    web:
+      # 开放指定节点 /actuator/（info, health, beans, env, metrics）或者全部
+      exposure:
+        include: '*'
+  # 在访问/actuator/health时显示完整信息
+  endpoint:
+    logfile:
+      external-file: log/cloud-mission/mission.log
+
+logging:
+  config: classpath:logback.xml
+
+app:
+  version: 1.0.0
+  swagger:
+    title: 微服务秒杀系统-秒杀接口文档

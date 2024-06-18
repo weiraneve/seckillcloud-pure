@@ -1,0 +1,69 @@
+server:
+  port: 8070
+
+spring:
+  profiles:
+    active: weiran
+  application:
+    name: cloud-manage
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DOCKER_DB:localhost}:3306/cloud-manage?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowMultiQueries=true&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+  flyway:
+    enabled: true
+    # 版本更新历史记录表
+    table: t_db_version
+    # 非空数据库初始化Flyway时需要打开此开关进行Baseline操作
+    baseline-on-migrate: true
+    # 是否可以无序执行。开发环境最好开启 outOfOrder, 生产环境关闭 outOfOrder
+    out-of-order: false
+    # 迁移前校验 SQL 文件是否存在问题
+    validate-on-migrate: true
+  redis:
+    database: 0
+    host: ${DOCKER_REDIS:localhost}
+    port: 6379
+    password:
+    timeout: 5000 # 连接超时时间（毫秒）
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_null
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${DOCKER_NACOS:localhost}:8848
+
+security:
+  jwt:
+    token:
+      secret-key: 6142b3c6f0e34477a899597cbd8ec45a2a5bd162415e617c0a32495215b8bc2ea01a3285149f94ae0f8a
+      expire-length: 604800000
+
+management:
+  endpoints:
+    web:
+      # 开放指定节点 /actuator/（info, health, beans, env, metrics）或者全部
+      exposure:
+        include: '*'
+  # 在访问/actuator/health时显示完整信息
+  endpoint:
+    logfile:
+      external-file: log/cloud-manage/manage.log
+
+mybatis-plus:
+  mapper-locations: classpath:mappers/*.xml
+
+logging:
+  config: classpath:logback.xml
+
+app:
+  version: 1.0.0
+  swagger:
+    title: 微服务秒杀系统-后台接口文档
