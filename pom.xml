@@ -14,8 +14,8 @@
     </modules>
 
     <groupId>com.weiran.seckillcloud</groupId>
-    <artifactId>seckillcloud</artifactId>
-    <version>${seckillcloud.version}</version>
+    <artifactId>seckillcloud-pure</artifactId>
+    <version>${seckillcloud-pure.version}</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -35,7 +35,7 @@
         <spring.cloud-alibaba>2.2.2.RELEASE</spring.cloud-alibaba>
         <mybatisPlus-version>3.4.3.4</mybatisPlus-version>
         <swagger2-version>2.9.2</swagger2-version>
-        <seckillcloud.version>1.0.0</seckillcloud.version>
+        <seckillcloud-pure.version>1.0.0</seckillcloud-pure.version>
     </properties>
 
     <dependencies>
