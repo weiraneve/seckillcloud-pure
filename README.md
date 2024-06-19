@@ -34,8 +34,8 @@
 <img src="./docs/images/seckill_flow_chart.png" alt="秒杀业务的流程图" width="60%" />
 
 ## 如何使用
-- 项目拥有Flyway数据库版本管理，首先在项目启动之前需要创建对应的Mysql数据库，cloud-mission-goods、
-cloud-mission-order、cloud-mission-seckillGoods、cloud-manage。
+- 项目拥有Flyway数据库版本管理，首先在项目启动之前需要创建对应的Mysql数据库，cloud-mission-goods、 cloud-mission-order、
+  cloud-mission-seckillGoods、cloud-manage。可以使用命令行`mysql -u root -p < ./sql/init/init.sql` 初始化创建数据库。
 然后分别启动下述中间件，如果没启动好中间件，项目则会报错。
 - 启动Nacos，如果没有则先安装，安装后按网上文章博客启动。
 - 启动本地的Redis，密码为空即可。如果本地没有安装Redis，则先安装。
