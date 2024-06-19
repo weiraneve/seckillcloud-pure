@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+}
+
+group = 'com.weiran.seckillcloud'
+version = '1.0.0'
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'io.spring.dependency-management'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation Dependencies.springBootStarterActuator
+        implementation Dependencies.nacosDiscovery
+        implementation Dependencies.lombok
+        implementation Dependencies.openFeign
+        implementation Dependencies.loadbalancer
+
+        compileOnly Dependencies.lombok
+        annotationProcessor Dependencies.lombok
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:${Versions.springBoot}"
+        }
+    }
+}

@@ -39,3 +39,7 @@ build/
 /.idea/
 /.fleet/
 .DS_Store
+
+### Gradle ###
+.gradle/
+buildSrc/.gradle/

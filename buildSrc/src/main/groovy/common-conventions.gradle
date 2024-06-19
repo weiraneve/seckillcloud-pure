@@ -1,0 +1,45 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation Dependencies.springBootStarterWeb
+    implementation Dependencies.springBootStarterJdbc
+    implementation Dependencies.springBootStarterDataRedis
+    implementation Dependencies.springCloud
+    implementation Dependencies.springCloudAlibaba
+    implementation Dependencies.swagger
+    implementation Dependencies.swaggerUI
+    implementation Dependencies.swaggerBootStrapUI
+    implementation Dependencies.mybatisPlus
+    implementation Dependencies.druid
+    implementation Dependencies.hutoolAll
+    implementation Dependencies.javaJwt
+    implementation Dependencies.commonsPool2
+    implementation Dependencies.jakartaValidationApi
+    implementation Dependencies.flywayCore
+    implementation Dependencies.mysqlConnectorJava
+    implementation Dependencies.pagehelper
+    implementation Dependencies.aspectjweaver
+}
+
+tasks.withType(Test) {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
