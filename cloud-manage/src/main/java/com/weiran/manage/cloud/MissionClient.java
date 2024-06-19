@@ -27,8 +27,9 @@ public interface MissionClient {
 
     // 分页查询goods
     @GetMapping("/cloud/goods")
-    Result<PageInfo<GoodsDTO>> goodsIndex(@RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize,
-                                          @RequestParam(required = false) String goodsName);
+    Result<PageInfo<GoodsDTO>> goodsIndex(@RequestParam(value = "page", defaultValue = "1") Integer page,
+                                          @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize,
+                                          @RequestParam(value = "goodsName", required = false) String goodsName);
 
     // 新增goods
     @PostMapping("/cloud/goods")
@@ -52,31 +53,33 @@ public interface MissionClient {
 
     // 批量删除
     @DeleteMapping("/cloud/goods/deletes")
-    Result<Object> goodsDeletes(@RequestParam String ids);
+    Result<Object> goodsDeletes(@RequestParam("ids") String ids);
 
     // 分页查询订单
     @GetMapping("/cloud/order/findByOrders")
     Result<PageInfo<OrderDTO>> findByOrders(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                            @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize, @RequestParam(required = false) Long id);
+                                            @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize,
+                                            @RequestParam(value = "id", required = false) Long id);
+
     // 分页查询秒杀商品
     @GetMapping("/cloud/seckillGoods")
     Result<PageInfo<SeckillGoodsDTO>> seckillGoods(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                                   @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize, @RequestParam(required = false) Long goodsId);
+                                                   @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize,
+                                                   @RequestParam(value = "goodsId", required = false) Long goodsId);
 
     // 统计查询
     @GetMapping("/cloud/welcome")
     Result<WelcomeVO> welcome();
-    
+
     // 上传图片
     @PostMapping(value = "/cloud/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     Result<Object> uploadPic(@RequestPart("file") MultipartFile file, @RequestParam("type") Integer type);
-        
+
     // 删除图片
     @DeleteMapping("/cloud/upload")
     Result<Object> deletePic(@RequestParam("key") String key);
-    
+
     // 批量删除图片
     @DeleteMapping("/cloud/upload/deletes")
     Result<Object> deletesPic(@RequestParam("keys") String[] keys);
-    
 }
