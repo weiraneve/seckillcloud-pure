@@ -29,8 +29,9 @@ public class GoodsController {
     private final MissionClient missionClient;
 
     @ApiOperation("分页查询goods")
-    @GetMapping
-    public Result<PageInfo<GoodsDTO>> goodsIndex(@RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize,
+    @GetMapping("/cloud/goods")
+    public Result<PageInfo<GoodsDTO>> goodsIndex(@RequestParam(value = "page", defaultValue = "1") Integer page,
+                                                 @RequestParam(value = "pageSize", defaultValue = "1") Integer pageSize,
                                                  @RequestParam(required = false) String goodsName) {
         return missionClient.goodsIndex(page, pageSize, goodsName);
     }
