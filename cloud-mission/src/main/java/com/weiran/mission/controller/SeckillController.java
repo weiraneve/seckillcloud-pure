@@ -6,7 +6,10 @@ import com.weiran.mission.service.SeckillService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,11 +26,9 @@ public class SeckillController {
      */
     @ApiOperation("秒杀接口")
     @GetMapping
-    public Result<Integer> doSeckill(@RequestParam("goodsId") long goodsId,
-                                     @RequestParam("path") String path,
-                                     HttpServletRequest request) {
+    public Result<Integer> doSeckill(@RequestParam("goodsId") long goodsId, @RequestParam("path") String path) {
 
-        return seckillService.doSeckill(goodsId, path, request);
+        return seckillService.doSeckill(goodsId, path);
     }
 
     /**
@@ -49,7 +50,7 @@ public class SeckillController {
     @ApiOperation("返回一个唯一的path的id")
     @SeckillLimit(seconds = 5, maxCount = 5)
     @GetMapping(value = "/getPath")
-    public Result<String> getSeckillPath(HttpServletRequest request, @RequestParam("goodsId") long goodsId) {
-        return seckillService.getSeckillPath(request, goodsId);
+    public Result<String> getSeckillPath(@RequestParam("goodsId") long goodsId) {
+        return seckillService.getSeckillPath(goodsId);
     }
 }

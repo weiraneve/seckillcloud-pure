@@ -69,8 +69,8 @@ public class SeckillServiceImpl implements SeckillService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Result<Integer> doSeckill(long goodsId, String path, HttpServletRequest request) {
-        long userId = getUserId(request);
+    public Result<Integer> doSeckill(long goodsId, String path) {
+        long userId = getUserId();
         // 验证path
         if (!checkPath(userId, goodsId, path)) {
             return Result.fail(ResponseEnum.REQUEST_ILLEGAL);
@@ -105,14 +105,14 @@ public class SeckillServiceImpl implements SeckillService {
         messageSender.sendMsg(seckillMessage);
     }
 
-    private long getUserId(HttpServletRequest request) {
-        return redisService.get(UserKey.getById, AuthUtil.getLoginTokenByRequest(request), Long.class);
+    private long getUserId() {
+        return redisService.get(UserKey.getById, AuthUtil.getUnifiedLoginToken(), Long.class);
     }
 
     // 客户端-前端服务器轮询查询是否下单成功
     @Override
     public Result<Long> seckillResult(long goodsId, HttpServletRequest request) {
-        long userId = getUserId(request);
+        long userId = getUserId();
         // resultId 为 orderId：成功; 0：排队中; -1：秒杀失败(秒杀时间已结束)
         long resultId = getResultId(goodsId, userId);
         return Result.success(resultId);
@@ -136,8 +136,8 @@ public class SeckillServiceImpl implements SeckillService {
 
     // 返回一个唯一的path的id
     @Override
-    public Result<String> getSeckillPath(HttpServletRequest request, long goodsId) {
-        long userId = getUserId(request);
+    public Result<String> getSeckillPath(long goodsId) {
+        long userId = getUserId();
         String path = createSeckillPath(userId, goodsId);
         return Result.success(path);
     }

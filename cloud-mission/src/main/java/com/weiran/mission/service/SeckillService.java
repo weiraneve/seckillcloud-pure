@@ -10,7 +10,7 @@ public interface SeckillService {
     /**
      * 执行秒杀
      */
-    Result<Integer> doSeckill(long goodsId, String path, HttpServletRequest request);
+    Result<Integer> doSeckill(long goodsId, String path);
 
     /**
      * 客户端轮询查询是否下单成功
@@ -20,7 +20,7 @@ public interface SeckillService {
     /**
      * 返回一个唯一的path的id
      */
-    Result<String> getSeckillPath(HttpServletRequest request, long goodsId);
+    Result<String> getSeckillPath(long goodsId);
 
     /**
      * 修改本地缓存map内容

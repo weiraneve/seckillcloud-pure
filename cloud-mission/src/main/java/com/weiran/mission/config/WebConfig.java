@@ -1,7 +1,6 @@
 package com.weiran.mission.config;
 
 import com.weiran.mission.interceptor.SeckillInterceptor;
-import com.weiran.mission.interceptor.AuthInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -16,11 +15,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
     final SeckillInterceptor seckillInterceptor;
-    final AuthInterceptor authInterceptor;
 
     /**
      * 注册拦截器
-     *
+     * <p>
      * addPathPatterns 用于添加拦截规则
      * excludePathPatterns 用户排除拦截
      */
@@ -29,10 +27,6 @@ public class WebConfig implements WebMvcConfigurer {
 
         registry.addInterceptor(seckillInterceptor)
                 .addPathPatterns("/seckill/**");
-
-        registry.addInterceptor(authInterceptor)
-                .addPathPatterns("/goods/**", "/seckill/**", "/order/**")
-                .excludePathPatterns("/test", "/static/**");
     }
 
     /**

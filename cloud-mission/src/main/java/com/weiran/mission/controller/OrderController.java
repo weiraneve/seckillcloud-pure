@@ -23,8 +23,8 @@ public class OrderController {
 
     @ApiOperation("返回客户的所有订单数据")
     @GetMapping
-    public Result<List<OrderDetailVo>> getOrderList(HttpServletRequest request) {
-        return orderService.getOrderList(request);
+    public Result<List<OrderDetailVo>> getOrderList() {
+        return orderService.getOrderList();
     }
 
 }

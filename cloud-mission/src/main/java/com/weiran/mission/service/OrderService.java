@@ -13,7 +13,7 @@ public interface OrderService {
     /**
      * 返回客户的所有订单数据
      */
-    Result<List<OrderDetailVo>> getOrderList(HttpServletRequest request);
+    Result<List<OrderDetailVo>> getOrderList();
 
     /**
      * 分页查询订单
