@@ -1,11 +1,9 @@
 package com.weiran.mission.service.impl;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.weiran.common.obj.Result;
 import com.weiran.common.pojo.dto.OrderDTO;
-import com.weiran.common.utils.AuthUtil;
 import com.weiran.mission.manager.GoodsManager;
 import com.weiran.mission.manager.OrderManager;
 import com.weiran.mission.mapper.OrderMapper;
@@ -30,8 +28,18 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Result<List<OrderDetailVo>> getOrderList() {
-        long userId = AuthUtil.getUnifiedUserId();
-        return getResultByUserId(userId);
+        List<OrderDetailVo> orderDetailVoList = new ArrayList<>();
+        List<Order> orderList = orderManager.list();
+        for (Order order : orderList) {
+            Goods goods = goodsManager.getById(order.getGoodsId());
+            orderDetailVoList.add(OrderDetailVo.builder()
+                    .orderId(order.getId())
+                    .goodsId(order.getGoodsId())
+                    .goodsName(goods.getGoodsName())
+                    .createdAt(order.getCreatedAt())
+                    .build());
+        }
+        return Result.success(orderDetailVoList);
     }
 
     @Override
@@ -46,18 +54,4 @@ public class OrderServiceImpl implements OrderService {
         return new PageInfo<>(orderDTOList);
     }
 
-    private Result<List<OrderDetailVo>> getResultByUserId(long userId) {
-        List<OrderDetailVo> orderDetailVoList = new ArrayList<>();
-        List<Order> orderList = orderManager.list(Wrappers.<Order>lambdaQuery().eq(Order::getUserId, userId));
-        for (Order order : orderList) {
-            Goods goods = goodsManager.getById(order.getGoodsId());
-            orderDetailVoList.add(OrderDetailVo.builder()
-                    .orderId(order.getId())
-                    .goodsId(order.getGoodsId())
-                    .goodsName(goods.getGoodsName())
-                    .createdAt(order.getCreatedAt())
-                    .build());
-        }
-        return Result.success(orderDetailVoList);
-    }
 }

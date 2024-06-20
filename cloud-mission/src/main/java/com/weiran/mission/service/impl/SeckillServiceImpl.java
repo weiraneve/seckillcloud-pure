@@ -9,7 +9,6 @@ import com.weiran.common.redis.key.SeckillGoodsKey;
 import com.weiran.common.redis.key.SeckillKey;
 import com.weiran.common.redis.manager.RedisLua;
 import com.weiran.common.redis.manager.RedisService;
-import com.weiran.common.utils.AuthUtil;
 import com.weiran.common.utils.SM3Util;
 import com.weiran.mission.manager.OrderManager;
 import com.weiran.mission.manager.SeckillGoodsManager;
@@ -69,9 +68,8 @@ public class SeckillServiceImpl implements SeckillService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result<Integer> doSeckill(long goodsId, String path) {
-        long userId = getUserId();
         // 验证path
-        if (!checkPath(userId, goodsId, path)) {
+        if (!checkPath(goodsId, path)) {
             return Result.fail(ResponseEnum.REQUEST_ILLEGAL);
         }
         // 若为非，则为商品已经售完
@@ -79,7 +77,7 @@ public class SeckillServiceImpl implements SeckillService {
             return Result.fail(ResponseEnum.SECKILL_OVER);
         }
         // 使用幂等机制，根据用户和商品id生成订单号，防止重复秒杀
-        Long orderId = goodsId * 1000000 + userId;
+        Long orderId = goodsId * 1000000;
         Order order = orderManager.getOne(Wrappers.<Order>lambdaQuery()
                 .eq(Order::getId, orderId));
         if (order != null) {
@@ -92,36 +90,29 @@ public class SeckillServiceImpl implements SeckillService {
             return Result.fail(ResponseEnum.SECKILL_OVER);
         }
         // 入队
-        handleMQ(goodsId, userId);
+        handleMQ(goodsId);
         return Result.success(0); // 排队中
     }
 
-    private void handleMQ(long goodsId, long userId) {
+    private void handleMQ(long goodsId) {
         SeckillMessage seckillMessage = new SeckillMessage();
-        seckillMessage.setUserId(userId);
         seckillMessage.setGoodsId(goodsId);
         // 判断库存、判断是否已经秒杀到了和减库存 下订单 写入订单都由消息队列来执行，做到削峰填谷
         messageSender.sendMsg(seckillMessage);
     }
 
-    private long getUserId() {
-        return AuthUtil.getUnifiedUserId();
-    }
-
     // 客户端-前端服务器轮询查询是否下单成功
     @Override
     public Result<Long> seckillResult(long goodsId, HttpServletRequest request) {
-        long userId = getUserId();
         // resultId 为 orderId：成功; 0：排队中; -1：秒杀失败(秒杀时间已结束)
-        long resultId = getResultId(goodsId, userId);
+        long resultId = getResultId(goodsId);
         return Result.success(resultId);
     }
 
-    private long getResultId(long goodsId, long userId) {
+    private long getResultId(long goodsId) {
         long resultId;
         // 查寻订单
         Order order = orderManager.getOne(Wrappers.<Order>lambdaQuery()
-                .eq(Order::getUserId, userId)
                 .eq(Order::getGoodsId, goodsId));
         if (order != null) { // 秒杀成功
             resultId = order.getId();
@@ -136,28 +127,27 @@ public class SeckillServiceImpl implements SeckillService {
     // 返回一个唯一的path的id
     @Override
     public Result<String> getSeckillPath(long goodsId) {
-        long userId = getUserId();
-        String path = createSeckillPath(userId, goodsId);
+        String path = createSeckillPath(goodsId);
         return Result.success(path);
     }
 
     // 在redis里验证path
-    private boolean checkPath(Long userId, long goodsId, String path) {
-        if (userId == null || path == null) {
+    private boolean checkPath(long goodsId, String path) {
+        if (path == null) {
             return false;
         }
-        String redisPath = redisService.get(SeckillKey.getSeckillPath, userId + "_" + goodsId, String.class);
+        String redisPath = redisService.get(SeckillKey.getSeckillPath, "_" + goodsId, String.class);
         return path.equals(redisPath);
     }
 
     // 加盐生成唯一path，构成URl动态化
-    private String createSeckillPath(Long userId, Long goodsId) {
-        if (userId == null || goodsId == null) {
+    private String createSeckillPath(Long goodsId) {
+        if (goodsId == null) {
             return null;
         }
         // 随机返回一个唯一的id，加上盐，然后sm3加密
         String str = SM3Util.sm3(UUID.randomUUID() + saltString);
-        redisService.set(SeckillKey.getSeckillPath, userId + "_" + goodsId,
+        redisService.set(SeckillKey.getSeckillPath, "_" + goodsId,
                 str, RedisCacheTimeEnum.GOODS_ID_EXTIME.getValue());
         return str;
     }
