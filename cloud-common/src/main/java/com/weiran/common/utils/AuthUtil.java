@@ -2,8 +2,8 @@ package com.weiran.common.utils;
 
 public class AuthUtil {
 
-    public static String getUnifiedLoginToken() {
-        return "1";
+    public static long getUnifiedUserId() {
+        return 1;
     }
 
 }

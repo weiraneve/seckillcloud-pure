@@ -7,7 +7,6 @@ import com.weiran.common.obj.Result;
 import com.weiran.common.pojo.dto.GoodsDTO;
 import com.weiran.common.redis.key.SeckillGoodsKey;
 import com.weiran.common.redis.key.SeckillKey;
-import com.weiran.common.redis.key.UserKey;
 import com.weiran.common.redis.manager.RedisLua;
 import com.weiran.common.redis.manager.RedisService;
 import com.weiran.common.utils.AuthUtil;
@@ -106,7 +105,7 @@ public class SeckillServiceImpl implements SeckillService {
     }
 
     private long getUserId() {
-        return redisService.get(UserKey.getById, AuthUtil.getUnifiedLoginToken(), Long.class);
+        return AuthUtil.getUnifiedUserId();
     }
 
     // 客户端-前端服务器轮询查询是否下单成功
