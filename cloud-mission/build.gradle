@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'common-conventions'
+    id 'org.springframework.boot'
 }
 
 group = 'com.weiran.seckillcloud'
@@ -20,4 +21,9 @@ targetCompatibility = '1.8'
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
+}
+
+bootJar {
+    archiveFileName = "cloud-mission-${project.version}.jar"
+    mainClass = 'com.weiran.mission.MissionApplication'
 }
