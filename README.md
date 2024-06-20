@@ -1,7 +1,7 @@
 # seckillcloud-pure
 
 ## 前言
-项目是基于[自己已开源的Java微服务方案的商品秒杀系统](https://github.com/weiraneve/seckillcloud)，将登录、授权、监控等功能去掉。
+项目是基于[自己已开源的Java微服务方案的商品秒杀系统](https://github.com/weiraneve/seckillcloud)，将登录、授权、监控等功能去掉。订单查询直接把所有订单信息返回。
 
 本项目版本迭代至1.0.0，欢迎各位多多交流。
 
