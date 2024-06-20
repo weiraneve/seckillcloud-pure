@@ -35,7 +35,7 @@ public class BasicConsumer {
             log.info("rabbitmq demo-消费者-监听消息：{} ", JSONUtil.toJsonStr(seckillMessage));
             long userId = seckillMessage.getUserId();
             long goodsId = seckillMessage.getGoodsId();
-            Long orderId = goodsId * 1000000 + userId;
+            Long orderId = System.currentTimeMillis();
             // 减库存，下订单，写入订单表
             Order order = new Order();
             order.setId(orderId);

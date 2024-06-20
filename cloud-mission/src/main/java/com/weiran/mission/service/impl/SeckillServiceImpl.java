@@ -76,8 +76,8 @@ public class SeckillServiceImpl implements SeckillService {
         if (!localMap.get(goodsId)) {
             return Result.fail(ResponseEnum.SECKILL_OVER);
         }
-        // 使用幂等机制，根据用户和商品id生成订单号，防止重复秒杀
-        Long orderId = goodsId * 1000000;
+        // 使用时间戳作为订单号
+        long orderId = System.currentTimeMillis();
         Order order = orderManager.getOne(Wrappers.<Order>lambdaQuery()
                 .eq(Order::getId, orderId));
         if (order != null) {
