@@ -1,7 +1,7 @@
 # seckillcloud-pure
 
 ## 前言
-项目是基于[自己已开源的Java微服务方案的商品秒杀系统](https://github.com/weiraneve/seckillcloud)，将登录、授权、监控等功能去掉。订单查询直接把所有订单信息返回。
+项目是基于[自己已开源的Java微服务方案的商品秒杀系统](https://github.com/weiraneve/seckillcloud)，将登录、授权、监控等功能去掉。
 
 本项目版本迭代至1.0.0，欢迎各位多多交流。
 
@@ -21,7 +21,7 @@
 - cloud-manage
 后台管理系统模块。使用Feign调用mission模块的一些接口，完成商品信息的增删查改的灵活配置和订单。对应cloud-manage表。
 - cloud-mission
-主要秒杀业务模块。对应cloud-mission-goods、order、seckillGoods三个表的多数据源。
+主要秒杀业务模块。对应cloud-mission-goods、order、seckillGoods三个表的多数据源。涉及到订单查询直接把所有订单信息返回，涉及到秒杀时刻的orderId则是用的当前的时间戳。
 
 ## 图文一览
 
