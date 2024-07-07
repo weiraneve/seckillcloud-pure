@@ -23,11 +23,10 @@ public class MenuController {
     private final AdminUserService adminUserService;
 
     @GetMapping
-    @ApiOperation("获取管理员权限菜单")
-    public Result<List<PermissionMenuDTO>> findByMenus(Principal principal) {
-        List<PermissionMenuDTO> menus = adminUserService.findByMenus(principal.getName());
+    @ApiOperation("获取管理员权限菜单(pure版 默认返回")
+    public Result<List<PermissionMenuDTO>> findByMenus() {
+        String name = "super_admin";
+        List<PermissionMenuDTO> menus = adminUserService.findByMenus(name);
         return Result.success(menus);
     }
-
-
 }

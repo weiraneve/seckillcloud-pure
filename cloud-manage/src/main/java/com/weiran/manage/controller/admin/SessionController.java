@@ -23,9 +23,10 @@ public class SessionController {
     private final AdminUserService adminUserService;
 
     @GetMapping
-    @ApiOperation("获取用户信息")
-    public Result<AdminUserDTO> index(Principal principal) {
-        Optional<AdminUserDTO> adminUserDTO = adminUserService.findByUsername(principal.getName());
+    @ApiOperation("获取用户信息(pure版 默认返回")
+    public Result<AdminUserDTO> index() {
+        String name = "super_admin";
+        Optional<AdminUserDTO> adminUserDTO = adminUserService.findByUsername(name);
         return adminUserDTO.map(Result::success).orElseGet(() -> Result.fail(ResponseEnum.USER_NOT_FOUND));
     }
 
