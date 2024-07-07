@@ -9,7 +9,6 @@ import com.weiran.manage.service.AdminUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -31,7 +30,6 @@ public class AdminUserController {
 
     private final AdminUserService adminUserService;
 
-    @PreAuthorize("hasAnyAuthority('SETTING_SELECT','ROLE_SUPER_ADMIN','ACCOUNT_ADMIN_USER')")
     @ApiOperation("管理员列表")
     @GetMapping
     public Result<PageInfo<AdminUserDTO>> findByAdminUsers(@RequestParam(value = "page", defaultValue = "1") Integer page,
@@ -40,7 +38,6 @@ public class AdminUserController {
         return Result.success(adminUsers);
     }
 
-    @PreAuthorize("hasAnyAuthority('SETTING_UPDATE','ROLE_SUPER_ADMIN')")
     @PutMapping
     @ApiOperation("修改管理员")
     public Result<Object> updateAdminUserInfo(@RequestBody @Valid AdminUserReq adminUserReq) {
@@ -48,7 +45,6 @@ public class AdminUserController {
         return Result.success();
     }
 
-    @PreAuthorize("hasAnyAuthority('SETTING_UPDATE','ROLE_SUPER_ADMIN')")
     @ApiOperation("修改管理员权限")
     @PatchMapping
     public Result<Object> patchAdminUserPermission(@RequestBody @Valid AdminUserPermissionReq adminUserPermissionReq) {
@@ -56,7 +52,6 @@ public class AdminUserController {
         return Result.success();
     }
 
-    @PreAuthorize("hasAnyAuthority('SRTTING_DELETE','ROLE_SUPER_ADMIN')")
     @ApiOperation("批量删除管理员")
     @DeleteMapping
     public Result<Object> deletes(@RequestParam String ids) {
@@ -64,7 +59,6 @@ public class AdminUserController {
         return Result.success();
     }
 
-    @PreAuthorize("hasAnyAuthority('SETTING_ADD','ROLE_SUPER_ADMIN')")
     @ApiOperation("新增管理员·关联角色")
     @PostMapping
     public Result<Object> createAdminUser(@RequestBody @Valid AdminUserReq adminUserReq) {
@@ -72,13 +66,10 @@ public class AdminUserController {
         return Result.success();
     }
 
-    @PreAuthorize("hasAnyAuthority('SETTING_UPDATE','ROLE_SUPER_ADMIN')")
     @ApiOperation("管理禁用/启用")
     @PatchMapping("/{id}")
     public Result<Object> switchIsBan(@PathVariable Integer id) {
         adminUserService.switchIsBan(id);
         return Result.success();
     }
-
-
 }

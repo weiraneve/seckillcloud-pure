@@ -8,7 +8,6 @@ import com.weiran.manage.service.PermissionMenuService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,7 +27,6 @@ public class PermissionMenuController {
 
     private final PermissionMenuService permissionMenuService;
 
-    @PreAuthorize("hasAnyAuthority('SETTING_SELECT','ROLE_SUPER_ADMIN','MENU_ADMIN_USER')")
     @ApiOperation("菜单选择")
     @GetMapping("/getMenus")
     public Result<List<TreeRoleMenuDTO>> getMenus() {
@@ -36,7 +34,6 @@ public class PermissionMenuController {
         return Result.success(treeRoleMenus);
     }
 
-    @PreAuthorize("hasAnyAuthority('SETTING_SELECT','ROLE_SUPER_ADMIN','MENU_ADMIN_USER')")
     @ApiOperation("菜单列表(目录/菜单)")
     @GetMapping
     public Result<List<PermissionMenuDTO>> findByRoleMenus(String search) {
@@ -44,7 +41,6 @@ public class PermissionMenuController {
         return Result.success(roleMenus);
     }
 
-    @PreAuthorize("hasAnyAuthority('SETTING_UPDATE','ROLE_SUPER_ADMIN')")
     @ApiOperation("修改菜单")
     @PutMapping
     public Result<Object> updateMenu(@RequestBody MenuReq menuReq) {
@@ -52,7 +48,6 @@ public class PermissionMenuController {
         return Result.success();
     }
 
-    @PreAuthorize("hasAnyAuthority('SRTTING_DELETE','ROLE_SUPER_ADMIN')")
     @ApiOperation("删除菜单")
     @DeleteMapping
     public Result<Object> delete(@RequestParam String id) {
@@ -60,7 +55,6 @@ public class PermissionMenuController {
         return Result.success();
     }
 
-    @PreAuthorize("hasAnyAuthority('SETTING_ADD','ROLE_SUPER_ADMIN')")
     @ApiOperation("新增菜单")
     @PostMapping
     public Result<Object> creatMenu(@RequestBody MenuReq menuReq) {

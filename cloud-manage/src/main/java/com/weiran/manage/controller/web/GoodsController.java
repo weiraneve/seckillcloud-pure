@@ -7,7 +7,6 @@ import com.weiran.manage.cloud.MissionClient;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,42 +36,36 @@ public class GoodsController {
     }
 
     @ApiOperation("新增goods")
-    @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_UPDATE_USER','ROLE_SUPER_ADMIN')")
     @PostMapping
     public Result<Object> goodsCreate(@RequestBody @Valid GoodsDTO goodsDTO) {
         return missionClient.goodsCreate(goodsDTO);
     }
 
     @ApiOperation("修改goods")
-    @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_UPDATE_USER','ROLE_SUPER_ADMIN')")
     @PutMapping
     public Result<Object> goodsUpdate(@RequestBody @Valid GoodsDTO goodsDTO) {
         return missionClient.goodsUpdate(goodsDTO);
     }
 
     @ApiOperation("选择单个goods")
-    @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_UPDATE_USER','ROLE_SUPER_ADMIN')")
     @GetMapping("/{id}/edit")
     public Result<GoodsDTO> goodsEdit(@PathVariable("id") Long id) {
         return missionClient.goodsEdit(id);
     }
 
     @ApiOperation("修改是否可用")
-    @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_UPDATE_USER','ROLE_SUPER_ADMIN')")
     @GetMapping("/updateUsing/{id}")
     public Result<Object> goodsUsing(@PathVariable("id") Long id) {
         return missionClient.goodsUsing(id);
     }
 
     @ApiOperation("单个删除goods")
-    @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_DELETE_USER','ROLE_SUPER_ADMIN')")
     @DeleteMapping("/{id}")
     public Result<Object> goodsDelete(@PathVariable("id") Long id) {
         return missionClient.goodsDelete(id);
     }
 
     @ApiOperation("批量删除")
-    @PreAuthorize("hasAnyAuthority('SETTING_NORMAL_DELETE_USER','ROLE_SUPER_ADMIN')")
     @DeleteMapping("/deletes")
     public Result<Object> goodsDeletes(@RequestParam String ids) {
         return missionClient.goodsDeletes(ids);

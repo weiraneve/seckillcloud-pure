@@ -2,7 +2,6 @@ package com.weiran.manage.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.weiran.manage.config.security.JwtUserService;
 import com.weiran.manage.dto.AdminUserDTO;
 import com.weiran.manage.dto.PermissionMenuDTO;
 import com.weiran.manage.dto.RoleDTO;
@@ -23,7 +22,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AdminUserServiceImpl implements AdminUserService {
 
-    private final JwtUserService jwtUserService;
     private final AdminUserMapper adminUserMapper;
     private final RolePermissionMapper rolePermissionMapper;
     private final UserRolePermissionMapper userRolePermissionMapper;
@@ -56,7 +54,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         }
         String encodedNewPassword = encodePass(adminUserPasswordUpdateReq.getNewPassword());
         adminUserMapper.updatePass(username, encodedNewPassword);
-        return jwtUserService.saveUserLoginInfo(createDTOWithPassword(adminUserPasswordUpdateReq, encodedNewPassword));
+        return "update password successful";
     }
 
     @Override

@@ -8,7 +8,6 @@ import com.weiran.manage.service.RoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,7 +27,6 @@ public class RoleController {
 
     private final RoleService roleService;
 
-    @PreAuthorize("hasAnyAuthority('SETTING_SELECT','ROLE_SUPER_ADMIN','ROLE_ADMIN_USER')")
     @ApiOperation("查询所有角色")
     @GetMapping("/findAll")
     public Result<List<RoleDTO>> findAll() {
@@ -36,7 +34,6 @@ public class RoleController {
         return Result.success(roles);
     }
 
-    @PreAuthorize("hasAnyAuthority('SETTING_SELECT','ROLE_SUPER_ADMIN','ROLE_ADMIN_USER')")
     @ApiOperation("角色列表")
     @GetMapping
     public Result<PageInfo<RoleDTO>> findByRoles(@RequestParam(value = "page", defaultValue = "1") Integer page,
@@ -46,7 +43,6 @@ public class RoleController {
         return Result.success(roles);
     }
 
-    @PreAuthorize("hasAnyAuthority('SETTING_UPDATE','ROLE_SUPER_ADMIN')")
     @ApiOperation("修改角色")
     @PutMapping
     public Result<Object> updateRole(@RequestBody RoleReq roleReq) {
@@ -55,7 +51,6 @@ public class RoleController {
     }
 
 
-    @PreAuthorize("hasAnyAuthority('SRTTING_DELETE','ROLE_SUPER_ADMIN')")
     @ApiOperation("删除角色")
     @DeleteMapping
     public Result<Object> deletes(@RequestParam String ids) {
@@ -63,12 +58,10 @@ public class RoleController {
         return Result.success();
     }
 
-    @PreAuthorize("hasAnyAuthority('SETTING_ADD','ROLE_SUPER_ADMIN')")
     @ApiOperation("新增角色")
     @PostMapping
     public Result<Object> createRole(@RequestBody RoleReq roleReq) {
         roleService.createRole(roleReq);
         return Result.success();
     }
-
 }
