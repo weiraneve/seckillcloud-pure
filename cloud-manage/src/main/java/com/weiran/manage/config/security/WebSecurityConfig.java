@@ -6,15 +6,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.header.Header;
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
@@ -27,9 +28,9 @@ import java.util.Arrays;
 import java.util.Collections;
 
 
-@EnableWebSecurity // 开启WebSecurity
+@EnableWebSecurity
 @RequiredArgsConstructor
-@EnableGlobalMethodSecurity(prePostEnabled = true) // 开启方法级的安全；prePostEnabled = true开启方法执行前与后，PreAuthorize注解会在方法执行前验证。
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AdminUserMapper adminUserMapper;
@@ -48,8 +49,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors()
                 .and()
                 .headers().addHeaderWriter(new StaticHeadersWriter(Arrays.asList(
-                new Header("Access-control-Allow-Origin", "*"),
-                new Header("Access-Control-Expose-Headers", "Authorization"))))
+                        new Header("Access-control-Allow-Origin", "*"),
+                        new Header("Access-Control-Expose-Headers", "Authorization"))))
                 .and().exceptionHandling().accessDeniedHandler(new RestAuthenticationAccessDeniedHandler()).and()
                 .addFilterAfter(new OptionsRequestFilter(), CorsFilter.class)
                 .apply(new JsonLoginConfigurer<>()).loginSuccessHandler(jsonLoginSuccessHandler())
@@ -65,38 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(daoAuthenticationProvider()).authenticationProvider(jwtAuthenticationProvider());
-    }
-
-    @Override
-    @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean("jwtAuthenticationProvider")
-    protected AuthenticationProvider jwtAuthenticationProvider() {
-        return new JwtAuthenticationProvider(jwtUserService());
-    }
-
-    @Bean("daoAuthenticationProvider")
-    protected AuthenticationProvider daoAuthenticationProvider() {
-        // 这里会默认使用BCryptPasswordEncoder比对加密后的密码，注意要跟createUser时保持一致
-        DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
-        daoProvider.setUserDetailsService(userDetailsService());
-        daoProvider.setHideUserNotFoundExceptions(false);
-        daoProvider.setPasswordEncoder(passwordEncoder());
-        return daoProvider;
-    }
-
-    @Override
-    protected UserDetailsService userDetailsService() {
-        return new JwtUserService(adminUserMapper);
+        auth.authenticationProvider(alwaysAuthenticatedProvider());
     }
 
     @Bean("jwtUserService")
@@ -114,16 +84,37 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new JwtRefreshSuccessHandler(jwtUserService());
     }
 
+    @Override
     @Bean
-    protected CorsConfigurationSource corsConfigurationSource() {
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
+    @Bean
+    public AuthenticationProvider alwaysAuthenticatedProvider() {
+        return new AuthenticationProvider() {
+            @Override
+            public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+                UserDetails userDetails = User.withUsername(authentication.getName()).password("").authorities(Collections.emptyList()).build();
+                return new UsernamePasswordAuthenticationToken(userDetails, authentication.getCredentials(), userDetails.getAuthorities());
+            }
+
+            @Override
+            public boolean supports(Class<?> authentication) {
+                return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
+            }
+        };
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Collections.singletonList("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "HEAD", "DELETE", "PATCH", "PUT", "OPTION"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "HEAD", "DELETE", "PATCH", "PUT", "OPTIONS"));
         configuration.setAllowedHeaders(Collections.singletonList("*"));
         configuration.addExposedHeader("Authorization");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
 }

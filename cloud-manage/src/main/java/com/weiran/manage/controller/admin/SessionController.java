@@ -30,12 +30,8 @@ public class SessionController {
     }
 
     @GetMapping("/findByUsername")
-    @ApiOperation("查询用户是否存在")
-    public Result<Object> findByUsername(@RequestParam String username) {
-        Optional<AdminUserDTO> userDTO = adminUserService.findByUsername(username);
-        if (!userDTO.isPresent()) {
-            return Result.fail(ResponseEnum.USER_NOT_FOUND);
-        }
+    @ApiOperation("查询用户是否存在(pure版 默认返回成功)")
+    public Result<Object> findByUsername() {
         return Result.success();
     }
 

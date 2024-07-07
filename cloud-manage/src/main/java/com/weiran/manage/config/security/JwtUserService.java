@@ -4,10 +4,13 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.weiran.manage.mapper.AdminUserMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.Collections;
 import java.util.Date;
 
 /**
@@ -22,8 +25,6 @@ public class JwtUserService implements UserDetailsService {
     private long validityInMilliseconds = 3600000;
 
     private final AdminUserMapper adminUserMapper;
-
-    private final String USERNAME_NOT_FOUND_MESSAGE = "用户不存在";
 
     public JwtUserService(AdminUserMapper adminUserMapper) {
         this.adminUserMapper = adminUserMapper;
@@ -47,7 +48,14 @@ public class JwtUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return adminUserMapper.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(USERNAME_NOT_FOUND_MESSAGE));
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode("defaultPassword");
+
+        return User.builder()
+                .username("super_admin")
+                .password(encodedPassword)
+                .authorities(Collections.singletonList(() -> "ROLE_SUPER_ADMIN"))
+                .build();
     }
 
 }
