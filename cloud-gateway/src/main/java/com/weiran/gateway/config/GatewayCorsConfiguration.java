@@ -7,6 +7,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
+
 /**
  * gateway 解决跨域
  */
@@ -14,11 +16,9 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 public class GatewayCorsConfiguration {
     private static final String ALLOWED_HEADERS = "*";
     private static final String ALLOWED_METHODS = "*";
-    private static final String ALLOWED_ORIGIN = "*";
     private static final boolean ALLOW_CREDENTIALS = true;
     private static final Long MAX_AGE = 18000L;
     private static final String CORS_PATH_PATTERN = "/**";
-
 
     @Bean
     public CorsWebFilter corsWebFilter() {
@@ -33,8 +33,8 @@ public class GatewayCorsConfiguration {
         corsConfiguration.addAllowedHeader(ALLOWED_HEADERS);
         // 允许提交请求的方法类型
         corsConfiguration.addAllowedMethod(ALLOWED_METHODS);
-        // 允许向该服务器提交请求的URI
-        corsConfiguration.addAllowedOrigin(ALLOWED_ORIGIN);
+        // 使用具体的允许源
+        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:3001"));
         // 允许cookies跨域
         corsConfiguration.setAllowCredentials(ALLOW_CREDENTIALS);
         // 预检请求的缓存时间（秒）
