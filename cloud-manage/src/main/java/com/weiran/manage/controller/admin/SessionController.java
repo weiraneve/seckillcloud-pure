@@ -32,7 +32,7 @@ public class SessionController {
 
     @GetMapping("/findByUsername")
     @ApiOperation("查询用户是否存在(pure版 默认返回成功)")
-    public Result<Object> findByUsername(@RequestParam String username) {
+    public Result<Object> findByUsername() {
         return Result.success();
     }
 
