@@ -25,8 +25,8 @@ public class SessionController {
     @GetMapping
     @ApiOperation("获取用户信息(pure版 默认返回")
     public Result<AdminUserDTO> index() {
-        String name = "super_admin";
-        Optional<AdminUserDTO> adminUserDTO = adminUserService.findByUsername(name);
+        String defaultRoleName = "super_admin";
+        Optional<AdminUserDTO> adminUserDTO = adminUserService.findByUsername(defaultRoleName);
         return adminUserDTO.map(Result::success).orElseGet(() -> Result.fail(ResponseEnum.USER_NOT_FOUND));
     }
 

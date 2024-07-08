@@ -24,8 +24,8 @@ public class MenuController {
     @GetMapping
     @ApiOperation("获取管理员权限菜单(pure版 默认返回")
     public Result<List<PermissionMenuDTO>> findByMenus() {
-        String name = "super_admin";
-        List<PermissionMenuDTO> menus = adminUserService.findByMenus(name);
+        String defaultRoleName = "super_admin";
+        List<PermissionMenuDTO> menus = adminUserService.findByMenus(defaultRoleName);
         return Result.success(menus);
     }
 }
