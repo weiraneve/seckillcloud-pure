@@ -19,7 +19,7 @@
 - cloud-common
 通用模块。负责一些通用的依赖管理和一些通用代码如Redis等的复用。
 - cloud-manage
-后台管理系统模块。使用Feign调用mission模块的一些接口，完成商品信息的增删查改的灵活配置和订单。对应cloud-manage表。
+后台管理系统模块。使用Feign调用mission模块的一些接口，完成商品信息的增删查改的灵活配置和订单。对应cloud-manage表。manage模块的登录，任何账号和密码都可以登录，默认权限为super_admin
 - cloud-mission
 主要秒杀业务模块。对应cloud-mission-goods、order、seckillGoods三个表的多数据源。涉及到订单查询直接把所有订单信息返回，涉及到秒杀时刻的orderId则是用的当前的时间戳。
 
@@ -53,7 +53,7 @@ Flyway的迁移sql文件则在对应模块之中。依次启动项目中的cloud
 - docker-compose使用的话，先要把所有module的jar包打出来，`mvn install` 然后 在项目文件夹根目录运行`docker-compose up -d`即可。
 
 ## 后台配置的OSS
-本项目关于`admin-manager`部分的商品图片存储，是使用[七牛云](https://www.qiniu.com/)的对象存储Kodo功能。
+本项目关于`admin-manage`部分的商品图片存储，是使用[七牛云](https://www.qiniu.com/)的对象存储Kodo功能。
 
 想详情由自己配置的，可去七牛云官网注册免费使用。然后修改`mission`模块中的`application.yml`文件中的:
 `qiniu`的`accessKey`,`secretKey`,`bucket`,`domain`。自己账户的`accessKey`,`secretKey`可以在七牛云的密钥管理中查看。
